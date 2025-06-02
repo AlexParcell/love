@@ -168,6 +168,7 @@ extern "C"
 #if defined(LOVE_ENABLE_WINDOW)
 	extern int luaopen_love_window(lua_State*);
 #endif
+	extern int luaopen_love_animation(lua_State*);
 	extern int luaopen_love_nogame(lua_State*);
 	extern int luaopen_love_jitsetup(lua_State*);
 	extern int luaopen_love_arg(lua_State*);
@@ -240,6 +241,7 @@ static const luaL_Reg modules[] = {
 #if defined(LOVE_ENABLE_WINDOW)
 	{ "love.window", luaopen_love_window },
 #endif
+	{ "love.animation", luaopen_love_animation },
 	{ "love.nogame", luaopen_love_nogame },
 	{ "love.jitsetup", luaopen_love_jitsetup },
 	{ "love.arg", luaopen_love_arg },

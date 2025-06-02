@@ -26,6 +26,9 @@ public:
 		float InFrameInterval
 	);
 
+	void Update(float DeltaTime);
+	void Draw();
+
 private:
 	int m_FrameCount;
 	int m_StartX;
