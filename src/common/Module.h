@@ -59,6 +59,7 @@ public:
 		M_TOUCH,
 		M_VIDEO,
 		M_WINDOW,
+		M_ANIMATION, // MOD - SS.AP
 		M_MAX_ENUM
 	};
 

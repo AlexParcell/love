@@ -1256,6 +1256,24 @@ target_link_libraries(love_window INTERFACE
 )
 
 ###################################
+# SERAPHINE SOFTWARE CUSTOM MODULES
+###################################
+
+#
+#love.animation
+#
+
+add_library(love_animation STATIC
+	src/custom_modules/animation/Animation.cpp
+	src/custom_modules/animation/Animation.h
+	src/custom_modules/animation/wrap_Animation.cpp
+	src/custom_modules/animation/wrap_Animation.h
+)
+target_link_libraries(love_animation PUBLIC
+	lovedep::Lua
+)
+
+###################################
 # Third-party libraries
 ###################################
 
@@ -1930,6 +1948,7 @@ set(LIBLOVE_DEPENDENCIES
 	love_touch
 	love_video
 	love_window
+	love_animation
 )
 set(LIBLOVE_LIBRARIES
 	love_3p_box2d
