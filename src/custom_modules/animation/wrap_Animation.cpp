@@ -41,8 +41,8 @@ int w_animation_getdrawdata(lua_State *L)
 {
 	Animation *anim = luax_checktype<Animation>(L, 1);
 
-	double FrameStartX = anim->m_FrameWidth * anim->m_CurrentFrame * anim->m_SpritesheetDirectionX;
-	double FrameStartY = anim->m_FrameHeight * anim->m_CurrentFrame * anim->m_SpritesheetDirectionY;
+	double FrameStartX = anim->m_OffsetX + anim->m_FrameWidth * anim->m_CurrentFrame * anim->m_SpritesheetDirectionX;
+	double FrameStartY = anim->m_OffsetY + anim->m_FrameHeight * anim->m_CurrentFrame * anim->m_SpritesheetDirectionY;
 
 	graphics::Quad* NewQuad = new graphics::Quad(
 		{FrameStartX, FrameStartY, (double)anim->m_FrameWidth, (double)anim->m_FrameHeight},
@@ -55,11 +55,23 @@ int w_animation_getdrawdata(lua_State *L)
 	return 2;
 }
 
+int w_animation_setoffset(lua_State *L)
+{
+	Animation* anim = luax_checktype<Animation>(L, 1);
+	int offsetX = luaL_checkinteger(L, 2);
+	int offsetY = luaL_checkinteger(L, 3);
+	anim->m_OffsetX = offsetX;
+	anim->m_OffsetY = offsetY;
+	
+	return 0;
+}
+
 static const luaL_Reg functions[] = 
 {
 	{ "newAnimation", w_NewAnimation },
 	{ "update", w_animation_update },
 	{ "getDrawData", w_animation_getdrawdata },
+	{ "setOffset", w_animation_setoffset },
 	{ 0, 0 }
 };
 

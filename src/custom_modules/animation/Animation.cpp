@@ -53,6 +53,8 @@ animation::Animation::Animation(
 	, m_FrameInterval(InFrameInterval)
 	, m_CurrentFrame(0)
 	, m_ElapsedTime(0.0f)
+	, m_OffsetX(0)
+	, m_OffsetY(0)
 {
 
 }

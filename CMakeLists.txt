@@ -1273,6 +1273,21 @@ target_link_libraries(love_animation PUBLIC
 	lovedep::Lua
 )
 
+#
+#love.camera
+#
+
+add_library(love_camera STATIC
+	src/custom_modules/camera/Camera.cpp
+	src/custom_modules/camera/Camera.h
+	src/custom_modules/camera/wrap_Camera.cpp
+	src/custom_modules/camera/wrap_Camera.h
+)
+target_link_libraries(love_camera PUBLIC
+	lovedep::Lua
+)
+
+
 ###################################
 # Third-party libraries
 ###################################
@@ -1949,6 +1964,7 @@ set(LIBLOVE_DEPENDENCIES
 	love_video
 	love_window
 	love_animation
+	love_camera
 )
 set(LIBLOVE_LIBRARIES
 	love_3p_box2d

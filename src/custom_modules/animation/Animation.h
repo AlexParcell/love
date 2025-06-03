@@ -40,6 +40,8 @@ public:
 
 	float m_ElapsedTime;
 	int m_CurrentFrame;
+	int m_OffsetX;
+	int m_OffsetY;
 };
 
 class AnimationModule : public love::Module

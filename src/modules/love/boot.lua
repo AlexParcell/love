@@ -208,6 +208,7 @@ function love.init()
 			window = true,
 			video = true,
 			animation = true,
+			camera = true,
 		},
 		audio = {
 			mixwithsystem = true, -- Only relevant for Android / iOS.
@@ -352,7 +353,8 @@ function love.init()
 		"graphics",
 		"math",
 		"physics",
-		"animation" -- MOD - SERA.AP
+		"animation", -- SERA.AP
+		"camera" -- SERA.AP
 	} do
 		if c.modules[v] then
 			require("love." .. v)
