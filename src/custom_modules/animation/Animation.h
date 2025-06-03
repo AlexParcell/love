@@ -27,9 +27,7 @@ public:
 	);
 
 	void Update(float DeltaTime);
-	void Draw();
 
-private:
 	int m_FrameCount;
 	int m_StartX;
 	int m_StartY;
@@ -39,6 +37,9 @@ private:
 	int m_FrameHeight;
 	float m_FrameInterval;
 	graphics::Texture *m_SpritesheetTexture;
+
+	float m_ElapsedTime;
+	int m_CurrentFrame;
 };
 
 class AnimationModule : public love::Module

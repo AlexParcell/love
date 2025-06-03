@@ -29,9 +29,37 @@ int w_NewAnimation(lua_State *L)
 	return 1;
 }
 
+int w_animation_update(lua_State *L)
+{
+	Animation* anim = luax_checktype<Animation>(L, 1);
+	float deltaTime = (float)luaL_checknumber(L, 2);
+	anim->Update(deltaTime);
+	return 0;
+}
+
+int w_animation_getdrawdata(lua_State *L)
+{
+	Animation *anim = luax_checktype<Animation>(L, 1);
+
+	double FrameStartX = anim->m_FrameWidth * anim->m_CurrentFrame * anim->m_SpritesheetDirectionX;
+	double FrameStartY = anim->m_FrameHeight * anim->m_CurrentFrame * anim->m_SpritesheetDirectionY;
+
+	graphics::Quad* NewQuad = new graphics::Quad(
+		{FrameStartX, FrameStartY, (double)anim->m_FrameWidth, (double)anim->m_FrameHeight},
+		anim->m_SpritesheetTexture->getWidth(), anim->m_SpritesheetTexture->getHeight()
+	);
+
+	luax_pushtype(L, NewQuad);
+	luax_pushtype(L, anim->m_SpritesheetTexture);
+
+	return 2;
+}
+
 static const luaL_Reg functions[] = 
 {
 	{ "newAnimation", w_NewAnimation },
+	{ "update", w_animation_update },
+	{ "getDrawData", w_animation_getdrawdata },
 	{ 0, 0 }
 };
 

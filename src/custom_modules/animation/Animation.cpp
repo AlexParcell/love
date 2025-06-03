@@ -51,8 +51,20 @@ animation::Animation::Animation(
 	, m_FrameHeight(InFrameHeight)
 	, m_FrameWidth(InFrameWidth)
 	, m_FrameInterval(InFrameInterval)
+	, m_CurrentFrame(0)
+	, m_ElapsedTime(0.0f)
 {
 
 }
 
+void animation::Animation::Update(float DeltaTime)
+{
+	m_ElapsedTime += DeltaTime;
+	if (m_ElapsedTime >= m_FrameInterval)
+	{
+		m_CurrentFrame++;
+		m_CurrentFrame %= m_FrameCount;
+		m_ElapsedTime = 0;
+	}
+}
 }
