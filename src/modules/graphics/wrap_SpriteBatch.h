@@ -23,6 +23,7 @@
 #include "common/runtime.h"
 #include "SpriteBatch.h"
 #include "math/wrap_Transform.h"
+#include "custom_modules/camera/Camera.h"
 
 namespace love
 {
@@ -59,7 +60,22 @@ static void luax_checkstandardtransform(lua_State *L, int idx, const T &func)
 			kx = (float) luaL_optnumber(L, idx + 7, 0.0);
 			ky = (float) luaL_optnumber(L, idx + 8, 0.0);
 		}
-		func(Matrix4(x, y, a, sx, sy, ox, oy, kx, ky));
+
+		// SERA.AP - BEGIN - Translate by camera if camera rendering is active
+		Matrix4 OutMatrix;
+
+		camera::CameraModule *camModule = Module::getInstance<camera::CameraModule>(Module::M_CAMERA);
+		if (camModule && camModule->m_bOffsetRenderingByCamera)
+		{
+			OutMatrix = Matrix4(x + camModule->m_CameraLocation.x, y + camModule->m_CameraLocation.y, a, sx, sy, ox, oy, kx, ky);
+		}
+		else
+		{
+			OutMatrix = Matrix4(x, y, a, sx, sy, ox, oy, kx, ky);
+		}
+
+		func(OutMatrix);
+		// SERA.AP - END
 	}
 }
 

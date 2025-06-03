@@ -6,6 +6,7 @@
 #include "common/Module.h"
 #include "graphics/Texture.h"
 #include "graphics/Quad.h"
+#include "common/Vector.h"
 
 namespace love
 {
@@ -16,6 +17,11 @@ class CameraModule : public love::Module
 public:
 	CameraModule();
 	virtual ~CameraModule() = default;
+
+	bool m_bOffsetRenderingByCamera;
+	Vector2 m_CameraLocation;
+
+
 };
 
 }
