@@ -20,6 +20,8 @@ public:
 
 	bool m_bOffsetRenderingByCamera;
 	Vector2 m_CameraLocation;
+
+	void TransformLocationByCameraLocation(float& OutX, float& OutY);
 };
 
 }

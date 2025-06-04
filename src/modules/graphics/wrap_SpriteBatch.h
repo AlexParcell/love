@@ -67,7 +67,8 @@ static void luax_checkstandardtransform(lua_State *L, int idx, const T &func)
 		camera::CameraModule *camModule = Module::getInstance<camera::CameraModule>(Module::M_CAMERA);
 		if (camModule && camModule->m_bOffsetRenderingByCamera)
 		{
-			OutMatrix = Matrix4(x - camModule->m_CameraLocation.x, y - camModule->m_CameraLocation.y, a, sx, sy, ox, oy, kx, ky);
+			camModule->TransformLocationByCameraLocation(x, y);
+			OutMatrix = Matrix4(x, y, a, sx, sy, ox, oy, kx, ky);
 		}
 		else
 		{
