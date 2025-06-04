@@ -1287,6 +1287,19 @@ target_link_libraries(love_camera PUBLIC
 	lovedep::Lua
 )
 
+#
+#love.debugger
+#
+
+add_library(love_debugger STATIC
+	src/custom_modules/debugger/Debugger.cpp
+	src/custom_modules/debugger/Debugger.h
+	src/custom_modules/debugger/wrap_Debugger.cpp
+	src/custom_modules/debugger/wrap_Debugger.h
+)
+target_link_libraries(love_debugger PUBLIC
+	lovedep::Lua
+)
 
 ###################################
 # Third-party libraries
@@ -1965,6 +1978,7 @@ set(LIBLOVE_DEPENDENCIES
 	love_window
 	love_animation
 	love_camera
+	love_debugger
 )
 set(LIBLOVE_LIBRARIES
 	love_3p_box2d

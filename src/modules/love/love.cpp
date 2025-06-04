@@ -170,6 +170,7 @@ extern "C"
 #endif
 	extern int luaopen_love_animation(lua_State*);
 	extern int luaopen_love_camera(lua_State*);
+	extern int luaopen_love_debugger(lua_State*);
 	extern int luaopen_love_nogame(lua_State*);
 	extern int luaopen_love_jitsetup(lua_State*);
 	extern int luaopen_love_arg(lua_State*);
@@ -244,6 +245,7 @@ static const luaL_Reg modules[] = {
 #endif
 	{ "love.animation", luaopen_love_animation },
 	{ "love.camera", luaopen_love_camera },
+	{ "love.debugger", luaopen_love_debugger },
 	{ "love.nogame", luaopen_love_nogame },
 	{ "love.jitsetup", luaopen_love_jitsetup },
 	{ "love.arg", luaopen_love_arg },

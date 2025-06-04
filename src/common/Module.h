@@ -61,6 +61,7 @@ public:
 		M_WINDOW,
 		M_ANIMATION, // SERA.AP
 		M_CAMERA, // SERA.AP
+		M_DEBUGGER, // SERA.AP
 		M_MAX_ENUM
 	};
 
