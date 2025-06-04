@@ -21,7 +21,8 @@ public:
 	bool m_bOffsetRenderingByCamera;
 	Vector2 m_CameraLocation;
 
-	void TransformLocationByCameraLocation(float& OutX, float& OutY);
+	love::Matrix4 GetTransformMatrix() const;
+	love::Matrix4 TransformByCameraLocation(const Matrix4& InMatrix);
 };
 
 }

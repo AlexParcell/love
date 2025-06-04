@@ -37,6 +37,7 @@
 // C++
 #include <algorithm>
 #include <stdlib.h>
+#include "custom_modules/camera/Camera.h"
 
 namespace love
 {
@@ -2183,32 +2184,86 @@ void Graphics::flushBatchedDrawsGlobal()
 
 void Graphics::draw(Drawable *drawable, const Matrix4 &m)
 {
+	Matrix4 FinalMatrix = m;
+	if (camera::CameraModule *camModule = Module::getInstance<camera::CameraModule>(Module::M_CAMERA))
+	{
+		if (camModule->m_bOffsetRenderingByCamera)
+		{
+			FinalMatrix = camModule->TransformByCameraLocation(FinalMatrix);
+		}
+	}
+
 	drawable->draw(this, m);
 }
 
 void Graphics::draw(Texture *texture, Quad *quad, const Matrix4 &m)
 {
-	texture->draw(this, quad, m);
+	Matrix4 FinalMatrix = m;
+	if (camera::CameraModule *camModule = Module::getInstance<camera::CameraModule>(Module::M_CAMERA))
+	{
+		if (camModule->m_bOffsetRenderingByCamera)
+		{
+			FinalMatrix = camModule->TransformByCameraLocation(FinalMatrix);
+		}
+	}
+
+	texture->draw(this, quad, FinalMatrix);
 }
 
 void Graphics::drawLayer(Texture *texture, int layer, const Matrix4 &m)
 {
-	texture->drawLayer(this, layer, m);
+	Matrix4 FinalMatrix = m;
+	if (camera::CameraModule *camModule = Module::getInstance<camera::CameraModule>(Module::M_CAMERA))
+	{
+		if (camModule->m_bOffsetRenderingByCamera)
+		{
+			FinalMatrix = camModule->TransformByCameraLocation(FinalMatrix);
+		}
+	}
+
+	texture->drawLayer(this, layer, FinalMatrix);
 }
 
 void Graphics::drawLayer(Texture *texture, int layer, Quad *quad, const Matrix4 &m)
 {
-	texture->drawLayer(this, layer, quad, m);
+	Matrix4 FinalMatrix = m;
+	if (camera::CameraModule *camModule = Module::getInstance<camera::CameraModule>(Module::M_CAMERA))
+	{
+		if (camModule->m_bOffsetRenderingByCamera)
+		{
+			FinalMatrix = camModule->TransformByCameraLocation(FinalMatrix);
+		}
+	}
+
+	texture->drawLayer(this, layer, quad, FinalMatrix);
 }
 
 void Graphics::drawInstanced(Mesh *mesh, const Matrix4 &m, int instancecount)
 {
-	mesh->drawInstanced(this, m, instancecount);
+	Matrix4 FinalMatrix = m;
+	if (camera::CameraModule *camModule = Module::getInstance<camera::CameraModule>(Module::M_CAMERA))
+	{
+		if (camModule->m_bOffsetRenderingByCamera)
+		{
+			FinalMatrix = camModule->TransformByCameraLocation(FinalMatrix);
+		}
+	}
+
+	mesh->drawInstanced(this, FinalMatrix, instancecount);
 }
 
 void Graphics::drawIndirect(Mesh *mesh, const Matrix4 &m, Buffer *indirectargs, int argsindex)
 {
-	mesh->drawIndirect(this, m, indirectargs, argsindex);
+	Matrix4 FinalMatrix = m;
+	if (camera::CameraModule *camModule = Module::getInstance<camera::CameraModule>(Module::M_CAMERA))
+	{
+		if (camModule->m_bOffsetRenderingByCamera)
+		{
+			FinalMatrix = camModule->TransformByCameraLocation(FinalMatrix);
+		}
+	}
+
+	mesh->drawIndirect(this, FinalMatrix, indirectargs, argsindex);
 }
 
 void Graphics::drawFromShader(PrimitiveType primtype, int vertexcount, int instancecount, Texture *maintexture)
@@ -2699,10 +2754,20 @@ void Graphics::polygon(DrawMode mode, const Vector2 *coords, size_t count, bool 
 			attributes[i].color = c;
 		}
 
+		love::Matrix4 FinalTransform = t;
+		if (camera::CameraModule *camModule = Module::getInstance<camera::CameraModule>(Module::M_CAMERA))
+		{
+			if (camModule->m_bOffsetRenderingByCamera)
+			{
+				FinalTransform = camModule->GetTransformMatrix() * FinalTransform;
+			}
+		}
+
 		if (is2D)
-			t.transformXY((Vector2*)data.stream[0], coords, cmd.vertexCount);
+			FinalTransform.transformXY((Vector2*)data.stream[0], coords, cmd.vertexCount);
 		else
-			t.transformXY0((Vector3*)data.stream[0], coords, cmd.vertexCount);
+			FinalTransform.transformXY0((Vector3*)data.stream[0], coords, cmd.vertexCount);
+
 	}
 }
 
