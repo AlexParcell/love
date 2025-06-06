@@ -26,7 +26,6 @@ public:
 	void LogValueStack(lua_State *L);
 	void Break(lua_State *L /*= nullptr*/);
 
-	void LogLocals(lua_State *L, int stackLevel = 1);
 private:
 	static std::string Indent(int level)
 	{

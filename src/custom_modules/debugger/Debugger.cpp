@@ -68,7 +68,6 @@ void DebugModule::LogCallStack(lua_State *L)
 	lua_Debug ar;
 	int depth = 0;
 
-	std::cout << "Lua Call Stack Trace: " << std::endl;
 	while (lua_getstack(L, depth, &ar))
 	{
 		lua_getinfo(L, "nSl", &ar);
@@ -82,7 +81,33 @@ void DebugModule::LogCallStack(lua_State *L)
 			std::cout << "?" << " ";
 		}
 		std::cout << "(" << ar.short_src << ":" << ar.currentline << ")" << std::endl;
+
+		int i = 1;
+		int LocalsFound = 0;
+		const char *name;
+
+		std::cout << "[LOCALS]:" << std::endl;
+		while ((name = lua_getlocal(L, &ar, i)) != nullptr)
+		{
+			if (name && std::string(name) == "(*temporary)")
+			{
+				lua_pop(L, 1);
+				i++;
+				continue;
+			}
+			std::cout << name << " = ";
+
+			LocalsFound++;
+			Log(L, -1);
+			lua_pop(L, 1);  // remove value from stack
+			i++;
+		}
+		if (LocalsFound == 0)
+		{
+			std::cout << "No locals found." << std::endl;
+		}
 		++depth;
+		std::cout << std::endl;
 	}
 
 	if (depth == 0)
@@ -94,8 +119,6 @@ void DebugModule::LogCallStack(lua_State *L)
 void DebugModule::LogValueStack(lua_State *L)
 {
 	int top = lua_gettop(L);
-	std::cout << "[Lua Value Stack] Top = " << top << std::endl;
-
 	for (int i = 1; i <= top; ++i)
 	{
 		Log(L, i);
@@ -109,53 +132,24 @@ void DebugModule::LogValueStack(lua_State *L)
 
 void DebugModule::Break(lua_State *L /*= nullptr*/)
 {
-	std::cout << "[DEBUG BREAKPOINT]" << std::endl;
+	std::cout << "[[[DEBUG BREAKPOINT]]]" << std::endl;
 	
-	std::cout << "[CALL STACK]:" << std::endl;
+	std::cout << "[[CALL STACK]]:" << std::endl;
 	if (L)
 	{
 		LogCallStack(L);
 	}
 	std::cout << std::endl;
 
-	std::cout << "[VALUE STACK]:" << std::endl;
+	std::cout << "[[VALUE STACK]]:" << std::endl;
 	if (L)
 	{
 		LogValueStack(L);
 	}
 	std::cout << std::endl;
 
-	std::cout << "[LOCALS]:" << std::endl;
-	if (L)
-	{
-		LogLocals(L);
-	}
-	std::cout << std::endl;
-
 	std::cout << "Press enter to continue." << std::endl;
 	std::cin.ignore();
-}
-
-void DebugModule::LogLocals(lua_State *L, int stackLevel)
-{
-	lua_Debug ar;
-	if (lua_getstack(L, stackLevel, &ar))
-	{
-		int i = 1;
-		const char *name;
-		while ((name = lua_getlocal(L, &ar, i)) != nullptr)
-		{
-			std::cout << name << " = ";
-
-			Log(L, -1);
-			lua_pop(L, 1);  // remove value from stack
-			i++;
-		}
-	}
-	else
-	{
-		std::cout << "No stack frame at level " << stackLevel << std::endl;
-	}
 }
 
 void DebugModule::PrintValueInLine(lua_State *L, int index)
