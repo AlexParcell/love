@@ -11,8 +11,24 @@ namespace debugger
 
 #define instance() (Module::getInstance<DebugModule>(Module::M_DEBUGGER))
 
+int w_Log(lua_State *L)
+{
+	DebugModule* instance = instance();
+	instance->Log(L, 1);
+	return 0;
+}
+
+int w_Break(lua_State *L)
+{
+	DebugModule* instance = instance();
+	instance->Break(L);
+	return 0;
+}
+
 static const luaL_Reg functions[] = 
 {
+	{ "log", w_Log },
+	{ "breakpoint", w_Break },
 	{ 0, 0 }
 };
 
