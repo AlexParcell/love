@@ -31,7 +31,7 @@ void DebugModule::Log(lua_State *L, int index, int indentLevel, std::unordered_s
 		}
 
 		visited->insert(ptr);
-		std::cout << "{" << std::endl;
+		std::cout << "{";
 
 		// Make sure index is absolute
 		if (index < 0)
@@ -39,9 +39,15 @@ void DebugModule::Log(lua_State *L, int index, int indentLevel, std::unordered_s
 			index = lua_gettop(L) + index + 1;
 		}
 
+		int counter = 0;
 		lua_pushnil(L); // first key
 		while (lua_next(L, index))
 		{
+			if (counter == 0)
+			{
+				std::cout << std::endl;
+			}
+			counter++;
 			std::cout << Indent(indentLevel + 1) << "[";
 
 			// Print key
@@ -54,12 +60,12 @@ void DebugModule::Log(lua_State *L, int index, int indentLevel, std::unordered_s
 			lua_pop(L, 1); // pop value
 		}
 
-		std::cout << Indent(indentLevel) << "}" << std::endl;
+		std::cout << Indent(indentLevel) << "}," << std::endl;
 	}
 	else
 	{
 		PrintValueInLine(L, index);
-		std::cout << std::endl;
+		std::cout << "," << std::endl;
 	}
 }
 
@@ -71,40 +77,46 @@ void DebugModule::LogCallStack(lua_State *L)
 	while (lua_getstack(L, depth, &ar))
 	{
 		lua_getinfo(L, "nSl", &ar);
-		std::cout << "#" << depth << " ";
+		std::cout << "[#" << depth << "] - ";
 		if (ar.name)
 		{
 			std::cout << ar.name << " ";
 		}
 		else
 		{
-			std::cout << "?" << " ";
+			std::cout << "UNKNOWN" << " ";
 		}
 		std::cout << "(" << ar.short_src << ":" << ar.currentline << ")" << std::endl;
 
 		int i = 1;
 		int LocalsFound = 0;
+		int TemporariesSkipped = 0;
 		const char *name;
 
-		std::cout << "[LOCALS]:" << std::endl;
 		while ((name = lua_getlocal(L, &ar, i)) != nullptr)
 		{
 			if (name && std::string(name) == "(*temporary)")
 			{
 				lua_pop(L, 1);
+				TemporariesSkipped++;
 				i++;
 				continue;
 			}
-			std::cout << name << " = ";
+			std::cout << "- " << name << " = ";
 
 			LocalsFound++;
 			Log(L, -1);
 			lua_pop(L, 1);  // remove value from stack
 			i++;
 		}
-		if (LocalsFound == 0)
+
+		if (TemporariesSkipped > 0)
 		{
-			std::cout << "No locals found." << std::endl;
+			std::cout << "- " << TemporariesSkipped << " temporaries skipped." << std::endl;
+		}
+		else if (LocalsFound == 0)
+		{
+			std::cout << "- No locals found." << std::endl;
 		}
 		++depth;
 		std::cout << std::endl;
@@ -112,7 +124,7 @@ void DebugModule::LogCallStack(lua_State *L)
 
 	if (depth == 0)
 	{
-		std::cout << "(Call stack is empty)" << std::endl;
+		std::cout << "- Call stack is empty" << std::endl;
 	}
 }
 
@@ -121,33 +133,35 @@ void DebugModule::LogValueStack(lua_State *L)
 	int top = lua_gettop(L);
 	for (int i = 1; i <= top; ++i)
 	{
+		std::cout << "- ";
 		Log(L, i);
 	}
 
 	if (top == 0)
 	{
-		std::cout << "(stack is empty)" << std::endl;
+		std::cout << "- Value stack is empty" << std::endl;
 	}
 }
 
 void DebugModule::Break(lua_State *L /*= nullptr*/)
 {
-	std::cout << "[[[DEBUG BREAKPOINT]]]" << std::endl;
+	std::cout << "[[[DEBUG BREAKPOINT]]]" << std::endl << std::endl;
 	
-	std::cout << "[[CALL STACK]]:" << std::endl;
+	std::cout << "[[CALL STACK]]" << std::endl;
 	if (L)
 	{
 		LogCallStack(L);
 	}
-	std::cout << std::endl;
+	std::cout << "[[/CALL STACK]]" << std::endl << std::endl;
 
-	std::cout << "[[VALUE STACK]]:" << std::endl;
+	std::cout << "[[VALUE STACK]]" << std::endl;
 	if (L)
 	{
 		LogValueStack(L);
 	}
-	std::cout << std::endl;
+	std::cout << "[[/VALUE STACK]]" << std::endl << std::endl;
 
+	std::cout << "[[[/DEBUG BREAKPOINT]]]" << std::endl;
 	std::cout << "Press enter to continue." << std::endl;
 	std::cin.ignore();
 }
